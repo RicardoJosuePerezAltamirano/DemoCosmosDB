@@ -196,8 +196,17 @@ namespace APICosmosV3.Controllers
 
         // POST api/<ProductsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post(Products value)
         {
+            var dbContainer = cosmosClient.GetDatabase("testDataBase").GetContainer("Locations");
+            var response = await dbContainer
+                .CreateItemAsync<Products>(value, new PartitionKey(value.LocationId.ToString()),
+                new ItemRequestOptions()
+                {
+                    EnableContentResponseOnWrite = false
+                });
+            Console.WriteLine($"RU al agregar {response.RequestCharge}");
+                return Ok(response);
         }
 
         // PUT api/<ProductsController>/5
