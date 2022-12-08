@@ -204,6 +204,9 @@ namespace APICosmosV3.Controllers
                 new ItemRequestOptions()
                 {
                     EnableContentResponseOnWrite = false
+                    /*
+                     * Gets or sets the boolean to only return the headers and status code in the Cosmos DB response for write item operation like Create, Upsert, Patch and Replace. Setting the option to false will cause the response to have a null resource. This reduces networking and CPU load by not sending the resource back over the network and serializing it on the client.
+                     * */
                 });
             Console.WriteLine($"RU al agregar {response.RequestCharge}");
                 return Ok(response);
@@ -211,8 +214,29 @@ namespace APICosmosV3.Controllers
 
         // PUT api/<ProductsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] string value)
         {
+            // partial update
+            var operations = new List<PatchOperation>()
+            {
+                PatchOperation.Add("/name","modificado 4"),
+                 PatchOperation.Add("/modifiedDate",DateTime.Now)
+            };
+            var dbContainer = cosmosClient.GetDatabase("testDataBase").GetContainer("Locations");
+            // para colocar un filtro
+            var options = new PatchItemRequestOptions// debe cumplir la condicion
+            {
+                FilterPredicate = "from c where c.price<1000 "
+            };
+            var response=await dbContainer.PatchItemAsync<Products>(
+                id: "1558",
+                 new PartitionKey("00000000-0000-0000-0000-000000000000"),
+                 patchOperations: operations,
+                 options
+                );
+            Console.WriteLine($"RU al actualizar {response.RequestCharge}");
+            return Ok();
+
         }
 
         // DELETE api/<ProductsController>/5
