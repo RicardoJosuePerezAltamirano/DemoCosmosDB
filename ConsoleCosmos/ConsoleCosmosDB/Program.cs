@@ -51,15 +51,33 @@ using (var obj = dbContainer.GetItemQueryIterator<dynamic>(query))
             {
                 // hacer un try para cada uno 
                 color = i.data.color;
-                descripcion = i.description;
-                largo = i.data.largo;
+                
             }
             catch(Exception ex)
             {
                 color = string.Empty;
-                descripcion = string.Empty;
-                largo = 0;
+                
+                
                 Console.WriteLine($"{ex.Message}");
+            }
+            try
+             {
+                descripcion = i.description;
+                
+            }
+            catch(Exception ex)
+            {
+                descripcion = string.Empty;
+
+            }
+            try
+            {
+                largo = i.data.largo;
+            }
+            catch (Exception es)
+            {
+                largo = 0;
+                
             }
             Console.WriteLine($"registro :{i.id} {i.name} {i.price} {i.LocationId} color: {color} description:{descripcion} largo:{largo} ");
 

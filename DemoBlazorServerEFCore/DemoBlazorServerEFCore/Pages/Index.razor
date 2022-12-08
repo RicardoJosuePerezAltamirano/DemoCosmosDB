@@ -1,0 +1,40 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt  />
+
+<div>
+    <p>
+        Formulario
+    </p>
+    <label>Nombre</label>
+    <input type="text" @bind-value="Name"></input>
+    <button @onclick="Save">Enviar</button>
+
+    </div>
+
+@if(UsersData!=null)
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var data in UsersData)
+            {
+                <tr>
+                    <td>@data.Id</td>
+                    <td>@data.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
